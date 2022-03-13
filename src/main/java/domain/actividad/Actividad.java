@@ -2,6 +2,8 @@ package domain.actividad;
 
 import co.com.sofka.domain.generic.AggregateEvent;
 import domain.actividad.events.ActividadCreada;
+import domain.actividad.events.NuevaSubscripcionAgregada;
+import domain.actividad.events.SubscripcionEliminada;
 import domain.actividad.values.ActividadId;
 import domain.actividad.values.Descripcion;
 import domain.actividad.values.Horario;
@@ -10,12 +12,13 @@ import domain.cliente.Cliente;
 import domain.cliente.values.ClienteId;
 
 import java.util.Map;
+import java.util.Set;
 
 public class Actividad extends AggregateEvent<ActividadId> {
     protected NombreActividad nombreActividad;
     protected Descripcion descripcion;
     protected Horario horario;
-    protected Map<ClienteId, Cliente> clientes;
+    protected Set<ClienteId> clientes;
 
     public Actividad(ActividadId entityId, NombreActividad nombreActividad, Descripcion descripcion, Horario horario) {
         super(entityId);
@@ -25,6 +28,18 @@ public class Actividad extends AggregateEvent<ActividadId> {
     private Actividad(ActividadId entityId){
         super(entityId);
         subscribe(new ActividadChange(this));
+    }
+
+    public void nuevaSubscripcion(ClienteId clienteId){
+        appendChange(new NuevaSubscripcionAgregada(clienteId)).apply();
+    }
+
+    public void eliminarSubscripcion(ClienteId clienteId){
+        appendChange(new SubscripcionEliminada(clienteId)).apply();
+    }
+
+    public Set<ClienteId> listarSubscripcion(){
+        return clientes;
     }
 
     public NombreActividad getNombreActividad() {

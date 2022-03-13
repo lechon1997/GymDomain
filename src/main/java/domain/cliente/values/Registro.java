@@ -1,4 +1,4 @@
-package domain.historial.values;
+package domain.cliente.values;
 
 import co.com.sofka.domain.generic.ValueObject;
 import domain.actividad.values.ActividadId;
